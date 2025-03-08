@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Resume Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            padding-top: 0;
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #343a40;
+            color: white;
+            transition: all 0.3s;
+            width: 240px;
+        }
+        .sidebar.collapsed {
+            margin-left: -240px;
+        }
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: 0.5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 0.75rem 1rem;
+        }
+        .sidebar .nav-link:hover {
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            font-size: 1rem;
+            background-color: rgba(0, 0, 0, 0.25);
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+        }
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            border-top: none;
+            font-weight: 600;
+        }
+        .badge-domain {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .badge-score {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+        .score-high {
+            background-color: #198754;
+        }
+        .score-medium {
+            background-color: #fd7e14;
+        }
+        .score-low {
+            background-color: #dc3545;
+        }
+        .action-buttons .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stats-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .menu-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 999;
+            background-color: #343a40;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -240px;
+            }
+            .sidebar.active {
+                margin-left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" id="menu-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+    
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-md-block sidebar" id="sidebar">
+        <div class="sidebar-sticky">
+            <div class="text-center mb-4 mt-3">
+                <i class="bi bi-shield-lock" style="font-size: 2rem;"></i>
+                <h5 class="mt-2">Admin Panel</h5>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-speedometer2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Applications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-graph-up"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-gear"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="mt-auto p-3" style="position: absolute; bottom: 0; width: 100%;">
+                <a href="/admin/logout" class="btn btn-outline-light btn-sm w-100">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main role="main" class="main-content" id="main-content">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h2">Dashboard</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="exportToCSV()">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="window.print()">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="stats-icon text-primary">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div class="stats-number">{{ applications|length }}</div>
+                    <div class="stats-label">Total Applications</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="stats-icon text-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stats-number">{{ applications|selectattr('score', 'ge', 7)|list|length }}</div>
+                    <div class="stats-label">High Scores (7-10)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="stats-icon text-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="stats-number">{{ applications|selectattr('score', 'ge', 4)|selectattr('score', 'lt', 7)|list|length }}</div>
+                    <div class="stats-label">Medium Scores (4-6)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="stats-icon text-danger">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                    <div class="stats-number">{{ applications|selectattr('score', 'lt', 4)|list|length }}</div>
+                    <div class="stats-label">Low Scores (1-3)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Applications -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Applications</h5>
+                <div class="input-group" style="width: 300px;">
+                    <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search applications...">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="applicationsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Domain</th>
+                                <th>Key Skills</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                            <tr>
+                                <td>{{ app.id }}</td>
+                                <td>{{ app.name }}</td>
+                                <td>{{ app.email }}</td>
+                                <td><span class="badge badge-domain">{{ app.domain }}</span></td>
+                                <td>
+                                    {% for skill in app.key_skills[:2] %}
+                                    <span class="badge bg-light text-dark">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if app.key_skills|length > 2 %}
+                                    <span class="badge bg-secondary">+{{ app.key_skills|length - 2 }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if app.score >= 7 %}
+                                    <span class="badge score-high badge-score">{{ app.score }}/10</span>
+                                    {% elif app.score >= 4 %}
+                                    <span class="badge score-medium badge-score">{{ app.score }}/10</span>
+                                    {% else %}
+                                    <span class="badge score-low badge-score">{{ app.score }}/10</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ app.date }}</td>
+                                <td class="action-buttons">
+                                    <a href="/admin/application/{{ app.id }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a href="/admin/application/{{ app.id }}/resume" class="btn btn-info btn-sm" target="_blank">
+                                        <i class="bi bi-file-earmark-pdf"></i> Resume
+                                    </a>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ app.id }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" id="deleteModal{{ app.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ app.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel{{ app.id }}">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete the application from <strong>{{ app.name }}</strong>? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="/admin/application/{{ app.id }}/delete" method="POST">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No applications yet</h5>
+                    <p>Applications will appear here once candidates submit their resumes.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+        {% for message in messages %}
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide toasts after 5 seconds
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 5000);
+            });
+            
+            // Toggle sidebar
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+            
+            // Collapse sidebar on small screens by default
+            function checkWidth() {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('expanded');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                }
+            }
+            
+            // Initial check
+            checkWidth();
+            
+            // Check on resize
+            window.addEventListener('resize', checkWidth);
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const table = document.getElementById('applicationsTable');
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (searchButton) {
+                searchButton.addEventListener('click', performSearch);
+            }
+            
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function(event) {
+                    if (event.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+        });
+        
+        // Export to CSV function
+        function exportToCSV() {
+            const table = document.getElementById('applicationsTable');
+            if (!table) return;
+            
+            const rows = table.querySelectorAll('tr');
+            let csv = [];
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = [], cols = rows[i].querySelectorAll('td, th');
+                
+                for (let j = 0; j < cols.length - 1; j++) { // Skip the Actions column
+                    // Get the text content and clean it
+                    let data = cols[j].textContent.replace(/(\r\n|\n|\r)/gm, '').trim();
+                    
+                    // Escape quotes and wrap in quotes
+                    data = data.replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(','));
+            }
+            
+            // Download CSV file
+            const csvString = csv.join('\n');
+            const filename = 'resume_applications_' + new Date().toISOString().slice(0, 10) + '.csv';
+            
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            
+            // Create download link
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
+</body>
+</html> 

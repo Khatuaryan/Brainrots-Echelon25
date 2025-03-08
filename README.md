@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Self-Evolving Neuro-Symbolic AI for Fair & Future-Proof Hiring
 
 **The Problem**
@@ -22,3 +23,55 @@ Develop an adaptive, bias-aware AI hiring system that:
 **What We Expect**
 
 A functional, innovative, and scalable AI hiring solution that ensures fairness, real-time adaptability, and seamless human-AI collaboration - transforming recruitment for the future.
+=======
+# PDF Summarizer
+
+A Flask web application that allows users to upload PDF files and get a summary of the content using Google's Gemini AI.
+
+## Features
+
+- Upload PDF files (up to 16MB)
+- Extract text from PDF files
+- Generate comprehensive summaries using Google's Gemini AI
+- Clean and responsive user interface
+
+## Setup
+
+1. Clone this repository
+2. Create a `.env` file in the root directory with your Google API key:
+   ```
+   GOOGLE_API_KEY=your_google_api_key_here
+   ```
+3. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+4. Run the application:
+   ```
+   python app.py
+   ```
+5. Open your browser and navigate to `http://127.0.0.1:5000/`
+
+## Requirements
+
+- Python 3.7+
+- Flask
+- PyPDF2
+- Google Generative AI Python SDK
+- python-dotenv
+
+## Usage
+
+1. Access the web interface at `http://127.0.0.1:5000/`
+2. Upload a PDF file using the form
+3. Click "Generate Summary" to process the file
+4. View the generated summary on the results page
+5. Click "Upload Another PDF" to summarize another document
+
+## Notes
+
+- The maximum file size is limited to 16MB
+- Only PDF files are accepted
+- The quality of the summary depends on the clarity and structure of the PDF content
+- The application uses Gemini 2.0 Flash model for generating summaries 
+>>>>>>> eba3e11 (first commit)
