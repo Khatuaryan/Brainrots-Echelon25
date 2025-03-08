@@ -1,16 +1,24 @@
-Fairness Benchmarking: Test bias mitigation algorithms on ad
-recommendation. For instance, build two job recommendation models – one
-standard and one bias-corrected – and use this data to compare how evenly
-they distribute opportunities across the proxy gender groups.
-Ad Audience Analysis: Analyze the user features to see if certain groups
-(e.g., proxy-female vs proxy-male) were less likely to be shown certain job
-ads. This can highlight unintentional biases in targeting.
-Custom Fairness Metric: Develop a new metric or visualization for
-“opportunity parity”
-– ensuring that qualified candidates have equal chance to
-see relevant jobs. Use the dataset’s structure (inbound user requests vs.
-outbound ad shown) to compute this.
-Algorithmic Experimentation: Implement techniques like adversarial
-debiasing or fairness-constrained optimization on recommendation
-algorithms, and use FairJob data to demonstrate how these techniques
-improve equity with minimal loss in accuracy
+# Self-Evolving Neuro-Symbolic AI for Fair & Future-Proof Hiring
+
+**The Problem**
+
+Modern AI-driven hiring systems often fall short - lacking adaptability, reinforcing biases, and operating as black-box models with little transparency. These limitations hinder career switchers, underrepresented candidates, and businesses striving for fair, data-driven recruitment.
+
+**Common challenges include:**
+
+* Outdated models that fail to keep pace with evolving job markets.
+* Embedded biases that exclude non-traditional candidates.
+* Opaque decision-making, leaving recruiters with little insight into AI-driven selections.
+
+**The Challenge**
+
+Develop an adaptive, bias-aware AI hiring system that:
+
+* **Learns in real-time** - Continuously updates based on job trends, skill graphs, and industry reports.
+* **Eliminates bias** - Embeds ethical constraints and fairness checks.
+* **Provides explainable decisions** - Justifies recommendations with interpretable rules and skill-gap analysis.
+* **Empowers recruiters** - Enables HR to refine AI decisions, adjust skill weightage, and track AI reasoning.
+
+**What We Expect**
+
+A functional, innovative, and scalable AI hiring solution that ensures fairness, real-time adaptability, and seamless human-AI collaboration - transforming recruitment for the future.
