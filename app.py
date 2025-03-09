@@ -494,13 +494,18 @@ def admin_login():
     username = request.form.get('username')
     password = request.form.get('password')
     
-    admin_username, admin_password = get_admin_credentials()
-    
-    if username == admin_username and password == admin_password:
-        session['admin_logged_in'] = True
-        return redirect(url_for('admin'))
-    else:
-        flash('Invalid username or password')
+    try:
+        admin_username, admin_password = get_admin_credentials()
+        
+        if username == admin_username and password == admin_password:
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin'))
+        else:
+            flash('Invalid username or password')
+            return redirect(url_for('admin'))
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        flash('Error during login. Please try again.')
         return redirect(url_for('admin'))
 
 @app.route('/admin/logout')
