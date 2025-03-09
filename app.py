@@ -25,9 +25,17 @@ except ImportError as e:
 # Load environment variables from .env file
 load_dotenv()
 
+# Debug: Print environment variables
+print("Environment variables:")
+print(f"GEMINI_API_KEY exists: {'GEMINI_API_KEY' in os.environ}")
+print(f"GOOGLE_API_KEY exists: {'GOOGLE_API_KEY' in os.environ}")
+
 # Check if API key is available
-if not os.environ.get("GOOGLE_API_KEY"):
-    raise ValueError("GOOGLE_API_KEY environment variable is not set. Please create a .env file with your API key.")
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        raise ValueError("API key not found. Please set either GEMINI_API_KEY or GOOGLE_API_KEY in your .env file.")
 
 # Define host and port for the application
 HOST = 'localhost'
@@ -168,7 +176,7 @@ def extract_data_from_analysis(analysis_text):
 def generate_summary(pdf_text):
     try:
         # Configure the generative AI model
-        genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
         
         # Use the gemini-pro model
         model = genai.GenerativeModel('gemini-2.0-flash')
@@ -248,7 +256,8 @@ def generate_summary(pdf_text):
         return response.text
     except Exception as e:
         app.logger.error(f"Error generating resume analysis: {str(e)}")
-        return None
+        # Raise the exception to be handled by the caller
+        raise
 
 def get_all_applications():
     conn = get_db_connection()
@@ -321,6 +330,16 @@ def delete_application(application_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # Import the job_scrap function
+    from job_scrap import get_job_listings
+    
+    # Get job listings for the landing page
+    try:
+        job_listings = get_job_listings(num_jobs=3)
+    except Exception as e:
+        app.logger.error(f"Error fetching job listings: {e}")
+        job_listings = []
+    
     if request.method == 'POST':
         # Check if the post request has the file part
         if 'pdf_file' not in request.files:
@@ -354,46 +373,71 @@ def index():
                     flash('Could not extract text from the resume. The file might be encrypted, damaged, or contain only images.')
                     return redirect(request.url)
                 
-                # Generate resume analysis
-                analysis_result = generate_summary(pdf_text)
+                try:
+                    # Try to generate resume analysis
+                    analysis_result = generate_summary(pdf_text)
+                    
+                    # If analysis was successful, extract data and save to database
+                    if analysis_result:
+                        extracted_data = extract_data_from_analysis(analysis_result)
+                        
+                        # Save application to database
+                        app_id = save_application(
+                            name, 
+                            email, 
+                            extracted_data['domain'].upper(),
+                            extracted_data['key_skills'],
+                            extracted_data['missing_skills'],
+                            extracted_data['score'],
+                            analysis_result,
+                            extracted_data['overview'],
+                            file_path
+                        )
+                        
+                        # Store application ID in session for result page
+                        session['current_application_id'] = app_id
+                except Exception as e:
+                    # Log the error but don't show it to the user
+                    app.logger.error(f"Error during analysis: {str(e)}")
+                    
+                    # Create mock data for database
+                    mock_data = {
+                        'domain': 'GENERAL',
+                        'key_skills': ['Resume', 'Submitted', 'For', 'Review'],
+                        'missing_skills': ['Pending', 'Analysis', 'Review'],
+                        'score': 5,
+                        'overview': 'Resume submitted for manual review.'
+                    }
+                    
+                    # Save application with mock data
+                    app_id = save_application(
+                        name, 
+                        email, 
+                        mock_data['domain'],
+                        mock_data['key_skills'],
+                        mock_data['missing_skills'],
+                        mock_data['score'],
+                        "API Error - Manual review required",
+                        mock_data['overview'],
+                        file_path
+                    )
+                    
+                    # Store application ID in session
+                    session['current_application_id'] = app_id
                 
-                if not analysis_result:
-                    flash('An error occurred while analyzing the resume. Please try again.')
-                    return redirect(request.url)
+                # Always show thank you page after submission
+                return render_template('thank_you.html')
                 
-                # Extract structured data from analysis
-                extracted_data = extract_data_from_analysis(analysis_result)
-                
-                # Save application to database
-                app_id = save_application(
-                    name, 
-                    email, 
-                    extracted_data['domain'].upper(),
-                    extracted_data['key_skills'],
-                    extracted_data['missing_skills'],
-                    extracted_data['score'],
-                    analysis_result,
-                    extracted_data['overview'],
-                    file_path
-                )
-                
-                # Store application ID in session for result page
-                session['current_application_id'] = app_id
-                
-                return render_template('result.html', 
-                                      domain=extracted_data['domain'].upper(),
-                                      key_skills=extracted_data['key_skills'],
-                                      missing_skills=extracted_data['missing_skills'],
-                                      score=extracted_data['score'],
-                                      overview=extracted_data['overview'])
             except Exception as e:
-                flash(f'An error occurred: {str(e)}')
-                return redirect(request.url)
+                # Log the error but don't show it to the user
+                app.logger.error(f"Error processing file: {str(e)}")
+                flash('Your application has been received. Thank you!')
+                return render_template('thank_you.html')
         else:
             flash('File type not allowed. Please upload a PDF file.')
             return redirect(request.url)
     
-    return render_template('index.html')
+    return render_template('index.html', job_listings=job_listings)
 
 @app.route('/admin', methods=['GET'])
 def admin():

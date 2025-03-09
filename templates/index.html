@@ -3,192 +3,699 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Analyzer - Application Portal</title>
+    <title>Resume Analyzer - AI-Powered Resume Analysis</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ff6347; /* Tomato red for accents */
+            --secondary-color: #f8f9fa; /* Light color for text on dark bg */
+            --dark-bg: #052e16; /* Dark green background */
+            --darker-bg: #041e10; /* Slightly darker green for sections */
+            --card-bg: rgba(255, 255, 255, 0.05); /* Semi-transparent white for cards */
+            --border-radius: 8px;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+        
         body {
             padding-top: 0;
-            background-color: #f5f5f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .hero-section {
-            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            background-color: var(--dark-bg);
+            font-family: 'Poppins', sans-serif;
             color: white;
-            padding: 80px 0;
-            margin-bottom: 40px;
+            line-height: 1.6;
+            min-height: 100vh;
         }
-        .hero-title {
-            font-size: 2.5rem;
+        
+        .navbar {
+            background-color: transparent;
+            padding: 20px 0;
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .navbar-brand {
+            color: white;
             font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+        }
+        
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: 500;
+            padding: 10px 15px;
+        }
+        
+        .hero-section {
+            background-color: var(--dark-bg);
+            padding: 180px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        
+        .hero-title .highlight {
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ff7a61;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 99, 71, 0.4);
+        }
+        
+        .btn-outline-light {
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            background-color: transparent;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+        
+        .stats-section {
+            padding: 80px 0;
+            background-color: var(--darker-bg);
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .stat-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .stat-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
             margin-bottom: 20px;
         }
-        .hero-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
+        
+        .content-section {
+            padding: 100px 0;
         }
-        .main-container {
-            max-width: 1200px;
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+        }
+        
+        .section-title p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
             margin: 0 auto;
-            padding: 0 15px;
         }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
             height: 100%;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .card:hover {
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: white;
+        }
+        
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .upload-section {
+            background-color: var(--darker-bg);
+            padding: 80px 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .upload-form {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-label {
+            color: white;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            box-shadow: none;
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .form-text {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .footer {
+            background-color: var(--darker-bg);
+            padding: 50px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer h5 {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer hr {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Job listings styles */
+        .job-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        
+        .job-card:hover {
+            background-color: rgba(255, 255, 255, 0.08);
             transform: translateY(-5px);
         }
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: none;
-            padding: 20px;
-            border-radius: 10px 10px 0 0 !important;
+        
+        .job-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
-        .card-body {
-            padding: 30px;
+        
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            gap: 10px;
         }
-        .upload-form {
-            margin-top: 20px;
+        
+        .job-badge {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
         }
-        .flash-messages {
+        
+        .job-badge i {
+            margin-right: 5px;
+        }
+        
+        .job-description {
+            color: rgba(255, 255, 255, 0.7);
             margin-bottom: 20px;
         }
-        .admin-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 40px;
-            text-align: center;
+        
+        .alert {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #fff;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: var(--border-radius);
         }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 30px 0;
-            margin-top: 60px;
+        
+        .text-light-purple {
+            color: rgba(255, 255, 255, 0.7);
         }
-        .feature-icon {
-            font-size: 2rem;
-            color: #0d6efd;
-            margin-bottom: 15px;
-        }
-        .admin-icon {
-            font-size: 1.5rem;
-            margin-right: 10px;
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .hero-section {
+                padding: 150px 0 80px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="main-container text-center">
-            <h1 class="hero-title">Resume Analyzer Portal</h1>
-            <p class="hero-subtitle">Upload your resume for instant AI-powered analysis and feedback</p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-file-earmark-text"></i> Resume Analyzer
+            </a>
+            <div class="ms-auto">
+                <a href="/admin" class="btn btn-outline-light">Admin Login</a>
+                <a href="#upload-form" class="btn btn-primary ms-3">Upload Resume</a>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="hero-title">
+                AI-Powered <span class="highlight">Resume Analysis</span>
+            </h1>
+            <p class="hero-subtitle">Transform your job search with instant, AI-powered resume analysis and optimization</p>
+            <a href="#upload-form" class="btn btn-primary">
+                <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload Resume
+            </a>
+        </div>
+    </section>
     
-    <div class="main-container">
-        <div class="row">
-            <!-- Features Column -->
-            <div class="col-md-5">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Why Use Our Resume Analyzer?</h4>
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="stat-number">98%</div>
+                        <div class="stat-title">Accuracy Rate</div>
+                        <div class="stat-description">Industry-leading precision in skill analysis</div>
                     </div>
-                    <div class="card-body">
-                        <div class="feature mb-4">
-                            <div class="feature-icon">
-                                <i class="bi bi-lightning-charge-fill"></i>
-                            </div>
-                            <h5>Instant Analysis</h5>
-                            <p>Get immediate feedback on your resume with our AI-powered analysis tool.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="bi bi-lightning-charge"></i>
                         </div>
-                        
-                        <div class="feature mb-4">
-                            <div class="feature-icon">
-                                <i class="bi bi-graph-up"></i>
-                            </div>
-                            <h5>Skill Assessment</h5>
-                            <p>Identify your key skills and discover areas for improvement.</p>
+                        <div class="stat-number">2M+</div>
+                        <div class="stat-title">Resumes Analyzed</div>
+                        <div class="stat-description">Trusted by professionals worldwide</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="bi bi-clock"></i>
                         </div>
-                        
-                        <div class="feature mb-4">
-                            <div class="feature-icon">
-                                <i class="bi bi-trophy-fill"></i>
-                            </div>
-                            <h5>Competitive Edge</h5>
-                            <p>Learn how to enhance your resume to stand out in your professional domain.</p>
-                        </div>
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-title">Instant Analysis</div>
+                        <div class="stat-description">Get results in seconds, anytime</div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+    
+    <!-- Job Listings Section -->
+    {% if job_listings %}
+    <section class="content-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Latest Job Opportunities</h2>
+                <p>Discover new career opportunities that match your skills and experience</p>
+            </div>
             
-            <!-- Upload Form Column -->
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Submit Your Application</h4>
+            <div class="row">
+                {% for job in job_listings %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="job-card">
+                        <h5 class="job-title">{{ job.title }}</h5>
+                        <div class="job-meta">
+                            <span class="job-badge"><i class="bi bi-calendar-event"></i> {{ job.date_posted }}</span>
+                            <span class="job-badge"><i class="bi bi-geo-alt"></i> Remote</span>
+                            <span class="job-badge"><i class="bi bi-briefcase"></i> Full-time</span>
+                        </div>
+                        <p class="job-description">{{ job.description }}</p>
+                        <a href="{{ job.url }}" class="btn btn-primary btn-sm" target="_blank">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> View Details
+                        </a>
                     </div>
-                    <div class="card-body">
-                        <div class="flash-messages">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Features Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+                <p>Our AI-powered resume analyzer provides detailed insights to help you stand out in your job search</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-upload"></i>
+                        </div>
+                        <h3 class="feature-title">1. Upload Resume</h3>
+                        <p class="feature-description">Submit your resume in PDF format through our secure portal</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h3 class="feature-title">2. AI Analysis</h3>
+                        <p class="feature-description">Our advanced AI analyzes your resume for skills, experience, and improvement areas</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h3 class="feature-title">3. Get Insights</h3>
+                        <p class="feature-description">Receive detailed feedback and actionable recommendations to improve your resume</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Upload Section -->
+    <section class="upload-section" id="upload-form">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="section-title">
+                        <h2>Upload Your Resume</h2>
+                        <p>Get instant AI-powered analysis and feedback to boost your career prospects</p>
+                    </div>
+                    
+                    <div class="upload-form">
+                        <div class="flash-messages mb-4">
                             {% with messages = get_flashed_messages() %}
                                 {% if messages %}
                                     {% for message in messages %}
-                                        <div class="alert alert-danger">{{ message }}</div>
+                                        <div class="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}
+                                        </div>
                                     {% endfor %}
                                 {% endif %}
                             {% endwith %}
                         </div>
                         
-                        <p class="mb-4">Upload your resume in PDF format to receive a detailed analysis of your skills, domain expertise, and areas for improvement.</p>
-                        
-                        <div class="upload-form">
-                            <form method="POST" enctype="multipart/form-data">
-                                <div class="mb-4">
-                                    <label for="name" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="name" class="form-label">
+                                    <i class="bi bi-person me-2"></i>Full Name
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope me-2"></i>Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="pdf_file" class="form-label">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i>Upload Resume (PDF format)
+                                </label>
+                                <input class="form-control" type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>Maximum file size: 16MB
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 py-3">
+                                <i class="bi bi-search me-2"></i>Analyze My Resume
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Job Listings Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold mb-3">Latest Job Opportunities</h2>
+                <p class="text-light-purple mb-5">Explore trending positions from top companies across various industries</p>
+            </div>
+            
+            <div class="row">
+                <!-- Job Card 1 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="background-color: white; border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="company-logo me-3" style="width: 48px; height: 48px; background-color: #052e16; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-building text-white fs-4"></i>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <label for="pdf_file" class="form-label">Upload Resume (PDF format)</label>
-                                    <input class="form-control" type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
-                                    <div class="form-text">Maximum file size: 16MB</div>
+                                <div>
+                                    <span class="text-muted">TechCorp Inc.</span>
+                                    <span class="badge bg-warning text-dark ms-2 rounded-pill px-3">Full-time</span>
                                 </div>
-                                
-                                <button type="submit" class="btn btn-primary w-100 py-2">Analyze My Resume</button>
-                            </form>
+                            </div>
+                            
+                            <h5 class="card-title fw-bold mb-3" style="color: #052e16;">Senior Software Engineer</h5>
+                            
+                            <div class="mb-3">
+                                <p class="mb-2 text-muted"><i class="bi bi-geo-alt me-2"></i>San Francisco, CA (Remote)</p>
+                                <p class="mb-2 text-muted"><i class="bi bi-currency-dollar me-2"></i>$140K - $180K</p>
+                                <p class="mb-3 text-muted"><i class="bi bi-briefcase me-2"></i>5+ years experience</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <span class="badge bg-light text-dark me-2 mb-2">React</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">Node.js</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">AWS</span>
+                            </div>
+                            
+                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Job Card 2 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="background-color: white; border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="company-logo me-3" style="width: 48px; height: 48px; background-color: #052e16; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-building text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted">DesignPro Labs</span>
+                                    <span class="badge bg-warning text-dark ms-2 rounded-pill px-3">Full-time</span>
+                                </div>
+                            </div>
+                            
+                            <h5 class="card-title fw-bold mb-3" style="color: #052e16;">Senior Product Designer</h5>
+                            
+                            <div class="mb-3">
+                                <p class="mb-2 text-muted"><i class="bi bi-geo-alt me-2"></i>New York, NY</p>
+                                <p class="mb-2 text-muted"><i class="bi bi-currency-dollar me-2"></i>$120K - $150K</p>
+                                <p class="mb-3 text-muted"><i class="bi bi-briefcase me-2"></i>4+ years experience</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <span class="badge bg-light text-dark me-2 mb-2">Figma</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">UI/UX</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">Design Systems</span>
+                            </div>
+                            
+                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Job Card 3 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="background-color: white; border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="company-logo me-3" style="width: 48px; height: 48px; background-color: #052e16; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-building text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted">DataTech AI</span>
+                                    <span class="badge bg-warning text-dark ms-2 rounded-pill px-3">Full-time</span>
+                                </div>
+                            </div>
+                            
+                            <h5 class="card-title fw-bold mb-3" style="color: #052e16;">Lead Data Scientist</h5>
+                            
+                            <div class="mb-3">
+                                <p class="mb-2 text-muted"><i class="bi bi-geo-alt me-2"></i>Boston, MA (Hybrid)</p>
+                                <p class="mb-2 text-muted"><i class="bi bi-currency-dollar me-2"></i>$150K - $190K</p>
+                                <p class="mb-3 text-muted"><i class="bi bi-briefcase me-2"></i>6+ years experience</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <span class="badge bg-light text-dark me-2 mb-2">Python</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">ML</span>
+                                <span class="badge bg-light text-dark me-2 mb-2">TensorFlow</span>
+                            </div>
+                            
+                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Admin Section -->
-        <div class="admin-section">
-            <h4 class="mb-3">Administrator Access</h4>
-            <p>Access the admin dashboard to view and manage submitted applications.</p>
-            <a href="/admin" class="btn btn-outline-dark">
-                <i class="bi bi-shield-lock admin-icon"></i>Admin Login
-            </a>
-        </div>
-    </div>
+    </section>
     
     <!-- Footer -->
-    <footer class="footer mt-5">
-        <div class="main-container text-center">
-            <p>&copy; 2025 Resume Analyzer. All rights reserved.</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Resume Analyzer</h5>
+                    <p>AI-powered resume analysis to help you stand out in your job search and advance your career.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">Home</a></li>
+                        <li><a href="#upload-form" class="text-decoration-none">Upload Resume</a></li>
+                        <li><a href="/admin" class="text-decoration-none">Admin Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <p><i class="bi bi-envelope-fill me-2"></i>support@resumeanalyzer.com</p>
+                    <p><i class="bi bi-telephone-fill me-2"></i>+1 (555) 123-4567</p>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Resume Analyzer. All rights reserved.</p>
+            </div>
         </div>
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html> 
