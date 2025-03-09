@@ -377,44 +377,6 @@
         </div>
     </section>
     
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="bi bi-check-circle"></i>
-                        </div>
-                        <div class="stat-number">98%</div>
-                        <div class="stat-title">Accuracy Rate</div>
-                        <div class="stat-description">Industry-leading precision in skill analysis</div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="bi bi-lightning-charge"></i>
-                        </div>
-                        <div class="stat-number">2M+</div>
-                        <div class="stat-title">Resumes Analyzed</div>
-                        <div class="stat-description">Trusted by professionals worldwide</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="bi bi-clock"></i>
-                        </div>
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-title">Instant Analysis</div>
-                        <div class="stat-description">Get results in seconds, anytime</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
     <!-- Job Listings Section -->
     {% if job_listings %}
     <section class="content-section">
@@ -435,9 +397,7 @@
                             <span class="job-badge"><i class="bi bi-briefcase"></i> Full-time</span>
                         </div>
                         <p class="job-description">{{ job.description }}</p>
-                        <a href="{{ job.url }}" class="btn btn-primary btn-sm" target="_blank">
-                            <i class="bi bi-box-arrow-up-right me-1"></i> View Details
-                        </a>
+                        <a href="{{ job.url }}" class="btn btn-success w-100" style="background-color: #052e16; border: none;" target="_blank">Apply Now</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -581,7 +541,7 @@
                                 <span class="badge bg-light text-dark me-2 mb-2">AWS</span>
                             </div>
                             
-                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
+                            <a href="https://www.linkedin.com/jobs/view/senior-software-engineer" class="btn btn-success w-100" style="background-color: #052e16; border: none;" target="_blank">Apply Now</a>
                         </div>
                     </div>
                 </div>
@@ -614,7 +574,7 @@
                                 <span class="badge bg-light text-dark me-2 mb-2">Design Systems</span>
                             </div>
                             
-                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
+                            <a href="https://www.linkedin.com/jobs/view/senior-product-designer" class="btn btn-success w-100" style="background-color: #052e16; border: none;" target="_blank">Apply Now</a>
                         </div>
                     </div>
                 </div>
@@ -647,7 +607,7 @@
                                 <span class="badge bg-light text-dark me-2 mb-2">TensorFlow</span>
                             </div>
                             
-                            <a href="#" class="btn btn-success w-100" style="background-color: #052e16; border: none;">Apply Now</a>
+                            <a href="https://www.linkedin.com/jobs/view/lead-data-scientist" class="btn btn-success w-100" style="background-color: #052e16; border: none;" target="_blank">Apply Now</a>
                         </div>
                     </div>
                 </div>

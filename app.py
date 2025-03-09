@@ -27,7 +27,6 @@ load_dotenv()
 
 # Debug: Print environment variables
 print("Environment variables:")
-print(f"GEMINI_API_KEY exists: {'GEMINI_API_KEY' in os.environ}")
 print(f"GOOGLE_API_KEY exists: {'GOOGLE_API_KEY' in os.environ}")
 
 # Check if API key is available
@@ -176,7 +175,7 @@ def extract_data_from_analysis(analysis_text):
 def generate_summary(pdf_text):
     try:
         # Configure the generative AI model
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
         
         # Use the gemini-pro model
         model = genai.GenerativeModel('gemini-2.0-flash')
@@ -261,7 +260,7 @@ def generate_summary(pdf_text):
 
 def get_all_applications():
     conn = get_db_connection()
-    applications = conn.execute('SELECT * FROM applications ORDER BY id DESC').fetchall()
+    applications = conn.execute('SELECT * FROM applications ORDER BY score DESC, id DESC').fetchall()
     
     # Convert to list of dictionaries
     result = []
