@@ -359,18 +359,6 @@
                         Applications
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-graph-up"></i>
-                        Analytics
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-gear"></i>
-                        Settings
-                    </a>
-                </li>
             </ul>
             
             <div class="mt-auto p-3" style="position: absolute; bottom: 0; width: 100%;">
@@ -425,13 +413,13 @@
                         <h5 class="card-title">Professional Domain</h5>
                         <span class="badge badge-domain mb-3">{{ application.domain }}</span>
                         
-                        <h5 class="card-title mt-4">Resume Score</h5>
-                        {% if application.score >= 7 %}
-                        <span class="badge score-high badge-score">{{ application.score }}/10</span>
-                        {% elif application.score >= 4 %}
-                        <span class="badge score-medium badge-score">{{ application.score }}/10</span>
+                        <h5 class="card-title mt-4">Final Score</h5>
+                        {% if application.final_score >= 7 %}
+                        <span class="badge score-high badge-score">{{ "%.1f"|format(application.final_score|float) }}/10</span>
+                        {% elif application.final_score >= 4 %}
+                        <span class="badge score-medium badge-score">{{ "%.1f"|format(application.final_score|float) }}/10</span>
                         {% else %}
-                        <span class="badge score-low badge-score">{{ application.score }}/10</span>
+                        <span class="badge score-low badge-score">{{ "%.1f"|format(application.final_score|float) }}/10</span>
                         {% endif %}
                     </div>
                 </div>

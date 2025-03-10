@@ -359,7 +359,6 @@
             </a>
             <div class="ms-auto">
                 <a href="/admin" class="btn btn-outline-light">Admin Login</a>
-                <a href="#upload-form" class="btn btn-primary ms-3">Upload Resume</a>
             </div>
         </div>
     </nav>
@@ -469,33 +468,46 @@
                             {% endwith %}
                         </div>
                         
-                        <form method="POST" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="name" class="form-label">
-                                    <i class="bi bi-person me-2"></i>Full Name
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                        <form method="POST" enctype="multipart/form-data" class="upload-form">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            
-                            <div class="mb-4">
-                                <label for="email" class="form-label">
-                                    <i class="bi bi-envelope me-2"></i>Email Address
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            
-                            <div class="mb-4">
-                                <label for="pdf_file" class="form-label">
-                                    <i class="bi bi-file-earmark-pdf me-2"></i>Upload Resume (PDF format)
-                                </label>
-                                <input class="form-control" type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
-                                <div class="form-text">
-                                    <i class="bi bi-info-circle me-1"></i>Maximum file size: 16MB
-                                </div>
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary w-100 py-3">
-                                <i class="bi bi-search me-2"></i>Analyze My Resume
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" min="18" max="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="education" class="form-label">Highest Education</label>
+                                <select class="form-control" id="education" name="education" required>
+                                    <option value="">Select Education Level</option>
+                                    <option value="High School">High School</option>
+                                    <option value="Bachelor">Bachelor's Degree</option>
+                                    <option value="Master">Master's Degree</option>
+                                    <option value="PhD">PhD</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pdf_file" class="form-label">Upload Resume (PDF)</label>
+                                <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                                <div class="form-text text-light">Maximum file size: 16MB</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-cloud-upload me-2"></i>Upload and Analyze
                             </button>
                         </form>
                     </div>

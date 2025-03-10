@@ -16,10 +16,13 @@ try:
     from dotenv import load_dotenv
     import PyPDF2
     import io
+    import pandas as pd
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.linear_model import LogisticRegression
 except ImportError as e:
     print(f"Error importing required packages: {e}")
     print("Please make sure all required packages are installed by running:")
-    print("pip install flask werkzeug PyPDF2 google-generativeai python-dotenv")
+    print("pip install flask werkzeug PyPDF2 google-generativeai python-dotenv pandas scikit-learn")
     sys.exit(1)
 
 # Load environment variables from .env file
@@ -61,7 +64,7 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Create applications table
+    # Create applications table with bias_score
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,10 +73,12 @@ def init_db():
         domain TEXT NOT NULL,
         key_skills TEXT NOT NULL,
         missing_skills TEXT NOT NULL,
-        score INTEGER NOT NULL,
+        score FLOAT NOT NULL,
+        bias_score FLOAT DEFAULT 5.0,
+        final_score FLOAT DEFAULT 5.0,
         date TEXT NOT NULL,
         analysis TEXT NOT NULL,
-        overview TEXT NOT NULL,
+        overview TEXT,
         resume_path TEXT NOT NULL
     )
     ''')
@@ -287,16 +292,28 @@ def get_application_by_id(application_id):
     conn.close()
     return None
 
-def save_application(name, email, domain, key_skills, missing_skills, score, analysis, overview, resume_path):
+def save_application(name, email, domain, key_skills, missing_skills, score, analysis, overview, resume_path, bias_score=None):
     conn = get_db_connection()
     
     # Convert lists to comma-separated strings
     key_skills_str = ','.join(key_skills)
     missing_skills_str = ','.join(missing_skills)
     
+    # Calculate final score using inverted bias score
+    if bias_score is None:
+        bias_score = 5.0  # Default neutral score
+    
+    # Invert the bias score (10 - bias_score) so that higher bias means lower score
+    # Then calculate weighted average: 70% resume score, 30% fairness score
+    fairness_score = 10 - bias_score  # Convert bias score to fairness score
+    final_score = (0.7 * score) + (0.3 * fairness_score)  # Weight resume score more heavily
+    
+    # Ensure final score stays within 0-10 range
+    final_score = max(0, min(10, final_score))
+    
     conn.execute(
-        'INSERT INTO applications (name, email, domain, key_skills, missing_skills, score, date, analysis, overview, resume_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        (name, email, domain, key_skills_str, missing_skills_str, score, datetime.now().strftime('%b %d, %Y'), analysis, overview, resume_path)
+        'INSERT INTO applications (name, email, domain, key_skills, missing_skills, score, bias_score, final_score, date, analysis, overview, resume_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        (name, email, domain, key_skills_str, missing_skills_str, score, bias_score, final_score, datetime.now().strftime('%b %d, %Y'), analysis, overview, resume_path)
     )
     
     conn.commit()
@@ -326,6 +343,63 @@ def delete_application(application_id):
                 app.logger.error(f"Error deleting resume file: {str(e)}")
     
     conn.close()
+
+def calculate_bias_score(applicant_data):
+    """Calculate bias score for a new applicant using the pre-trained model"""
+    try:
+        # Load the pre-trained model and scaler
+        df = pd.read_csv("static/IBM-HR-Analytics-Employee-Attrition-and-Performance-Revised.csv")
+        
+        # Select relevant features for bias detection
+        features = ['Age', 'Gender', 'Education', 'Department', 'JobRole', 
+                   'YearsAtCompany', 'YearsInCurrentRole', 
+                   'YearsSinceLastPromotion', 'YearsWithCurrManager']
+        
+        # Create feature matrix X
+        X = df[features].copy()
+        
+        # Convert categorical variables to dummy variables
+        X = pd.get_dummies(X, columns=['Gender', 'Department', 'JobRole'])
+        
+        # Create target variable y
+        y = df['Attrition']
+        
+        # Create a scaler and fit it to the training data
+        scaler = StandardScaler()
+        # Scale only numeric columns
+        numeric_cols = ['Age', 'Education', 'YearsAtCompany', 'YearsInCurrentRole', 
+                       'YearsSinceLastPromotion', 'YearsWithCurrManager']
+        X[numeric_cols] = scaler.fit_transform(X[numeric_cols])
+        
+        # Train the model on the full dataset
+        model = LogisticRegression(random_state=42)
+        model.fit(X, y)
+        
+        # Prepare applicant data
+        applicant_df = pd.DataFrame([applicant_data])
+        
+        # Convert categorical variables to dummy variables
+        applicant_df = pd.get_dummies(applicant_df, columns=['Gender', 'Department', 'JobRole'])
+        
+        # Align features with training data
+        for col in X.columns:
+            if col not in applicant_df.columns:
+                applicant_df[col] = 0
+        applicant_df = applicant_df[X.columns]
+        
+        # Scale numeric features
+        applicant_df[numeric_cols] = scaler.transform(applicant_df[numeric_cols])
+        
+        # Get prediction probability
+        bias_score = model.predict_proba(applicant_df)[0][1]
+        
+        # Normalize to 0-10 scale
+        bias_score = bias_score * 10
+        
+        return bias_score
+    except Exception as e:
+        print(f"Error calculating bias score: {str(e)}")
+        return 5.0 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -380,7 +454,21 @@ def index():
                     if analysis_result:
                         extracted_data = extract_data_from_analysis(analysis_result)
                         
-                        # Save application to database
+                        # Calculate bias score
+                        applicant_data = {
+                            'Gender': request.form.get('gender', 'Unknown'),
+                            'Age': request.form.get('age', 30),
+                            'Education': request.form.get('education', 'Bachelor'),
+                            'Department': extracted_data['domain'],
+                            'JobRole': extracted_data['domain'],
+                            'YearsAtCompany': 0,
+                            'YearsInCurrentRole': 0,
+                            'YearsSinceLastPromotion': 0,
+                            'YearsWithCurrManager': 0
+                        }
+                        bias_score = calculate_bias_score(applicant_data)
+                        
+                        # Save application to database with bias score
                         app_id = save_application(
                             name, 
                             email, 
@@ -390,7 +478,8 @@ def index():
                             extracted_data['score'],
                             analysis_result,
                             extracted_data['overview'],
-                            file_path
+                            file_path,
+                            bias_score
                         )
                         
                         # Store application ID in session for result page
