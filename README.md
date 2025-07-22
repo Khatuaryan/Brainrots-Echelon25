@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Self-Evolving Neuro-Symbolic AI for Fair & Future-Proof Hiring
 
 **The Problem**
