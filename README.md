@@ -73,4 +73,3 @@ A Flask web application that allows users to upload PDF files and get a summary 
 - Only PDF files are accepted
 - The quality of the summary depends on the clarity and structure of the PDF content
 - The application uses Gemini 2.0 Flash model for generating summaries 
->>>>>>> eba3e11 (first commit)
